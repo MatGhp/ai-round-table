@@ -2,7 +2,7 @@
   "name": "ai-roundtable-backend",
   "version": "1.0.0",
   "description": "Azure Functions backend for AI Round Table",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
