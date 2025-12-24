@@ -45,7 +45,7 @@ export interface ResponseFormat {
 export interface AgentCallOptions {
   systemPrompt: string;
   userPrompt: string;
-  responseFormat: ResponseFormat;
+  responseFormat?: ResponseFormat;
   temperature?: number;
   maxTokens?: number;
   context?: InvocationContext;
