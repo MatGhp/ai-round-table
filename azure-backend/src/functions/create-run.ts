@@ -1,4 +1,5 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
+import * as df from 'durable-functions';
 import { createRun } from '../lib/cosmos-client';
 import { generateRunId } from '../lib/utils';
 import { CreateRunRequestSchema, RunDocumentSchema } from '../lib/schemas';
@@ -56,9 +57,13 @@ export async function createRunHandler(
 
     context.log(`Run created: ${run_id}`);
 
-    // TODO: Start Durable Functions orchestrator here
-    // const client = df.getClient(context);
-    // await client.startNew('AgentPipelineOrchestrator', run_id, { run_id, idea_text });
+    // Start Durable Functions orchestrator
+    const client = df.getClient(context);
+    const instanceId = await client.startNew('AgentPipeline', {
+      input: { runId: run_id, ideaText: idea_text },
+    });
+
+    context.log(`Orchestrator started: ${instanceId} for run ${run_id}`);
 
     // Return response immediately (202 Accepted - processing async)
     return {
@@ -66,6 +71,7 @@ export async function createRunHandler(
       jsonBody: {
         run_id,
         status: 'INIT',
+        orchestrator_instance_id: instanceId,
         created_at: now,
       },
     };
