@@ -1,0 +1,37 @@
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "maxTelemetryItemsPerSecond": 20
+      }
+    },
+    "logLevel": {
+      "default": "Information",
+      "Function": "Information",
+      "Host.Aggregator": "Information"
+    }
+  },
+  "extensions": {
+    "durableTask": {
+      "hubName": "AIRoundTableHub",
+      "storageProvider": {
+        "connectionStringName": "AzureWebJobsStorage",
+        "controlQueueBatchSize": 32,
+        "partitionCount": 4
+      },
+      "maxConcurrentActivityFunctions": 10,
+      "maxConcurrentOrchestratorFunctions": 10
+    },
+    "http": {
+      "routePrefix": "api",
+      "maxConcurrentRequests": 100,
+      "maxOutstandingRequests": 200
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.*, 5.0.0)"
+  }
+}

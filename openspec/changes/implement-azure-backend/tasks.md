@@ -18,11 +18,11 @@
 ## Week 1: Azure Setup & HTTP Triggers (18 hours)
 
 ### 1. Azure Environment Setup (2 hours)
-- [ ] 1.1 Install tools:
+- [x] 1.1 Install tools:
   - `npm install -g azure-functions-core-tools@4`
   - `winget install Microsoft.AzureCLI`
 - [ ] 1.2 Login: `az login`
-- [ ] 1.3 Create resource group: `az group create --name rg-ai-roundtable --location eastus`
+- [ ] 1.3 Create resource group: Run `scripts/setup-azure.ps1` (Windows) or `scripts/setup-azure.sh` (Linux/Mac)
 - [ ] 1.4 Install VS Code extensions: Azure Functions, Azure Account
 
 ---
@@ -76,19 +76,10 @@ az cognitiveservices account create \
 ---
 
 ### 4. Functions Project Init (2 hours)
-- [ ] 4.1 Create project:
-```bash
-mkdir azure-backend
-cd azure-backend
-func init --typescript
-npm install
-```
-- [ ] 4.2 Install dependencies:
-```bash
-npm install @azure/cosmos @azure/openai zod date-fns
-npm install -D @types/node
-```
-- [ ] 4.3 Configure `local.settings.json`:
+- [x] 4.1 Create project (COMPLETED - azure-backend/ directory created)
+- [x] 4.2 Install dependencies (COMPLETED - package.json configured)
+- [ ] 4.3 Run `npm install` in azure-backend/
+- [ ] 4.4 Configure `local.settings.json` with Azure credentials from setup script:
 ```json
 {
   "IsEncrypted": false,
@@ -115,26 +106,26 @@ npm install -D @types/node
 **Test:**
 ```bash
 curl -X POST http://localhost:7071/api/preflight \
-  -H "Content-Type: application/json" \
-  -d '{"idea_text": "app"}'
-```
-
----
+  -x] 5.1 Create function (COMPLETED - src/functions/preflight.ts)
+- [x] 5.2 Implement validation logic (idea length, keywords)
+- [x] 5.3 Generate clarification questions (i18n keys)
+- [x] 5.4 Return `{ preflight_id, ready, questions }`
+- [ ] 5.5 Test locally: `npm start` in azure-backend/
 
 ### 6. HTTP Trigger: Create Run (3 hours)
-- [ ] 6.1 Create function: `func new --name create-run --template "HTTP trigger"`
-- [ ] 6.2 Generate run_id (format: `run_2025-12-24_0001`)
-- [ ] 6.3 Create CosmosDB document with status=INIT
-- [ ] 6.4 Start Durable Functions orchestrator (client binding)
-- [ ] 6.5 Return `{ run_id, status: "INIT" }` immediately
+- [x] 6.1 Create function (COMPLETED - src/functions/create-run.ts)
+- [x] 6.2 Generate run_id (format: `run_2025-12-24_0001`)
+- [x] 6.3 Create CosmosDB document with status=INIT
+- [ ] 6.4 Start Durable Functions orchestrator (TODO - Week 2)
+- [x] 6.5 Return `{ run_id, status: "INIT" }` immediately
 
 ---
 
 ### 7. HTTP Trigger: Get Run (3 hours)
-- [ ] 7.1 Create function: `func new --name get-run --template "HTTP trigger"`
-- [ ] 7.2 Query CosmosDB by run_id (partition key = id)
-- [ ] 7.3 Return full document with conversation array
-- [ ] 7.4 Handle 404 if run not found
+- [x] 7.1 Create function (COMPLETED - src/functions/get-run.ts)
+- [x] 7.2 Query CosmosDB by run_id (partition key = id)
+- [x] 7.3 Return full document with conversation array
+- [x] 7.4 Handle 404 if run not found
 
 ---
 

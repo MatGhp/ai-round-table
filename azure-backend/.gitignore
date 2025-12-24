@@ -1,0 +1,32 @@
+# Azure Functions artifacts
+bin
+obj
+appsettings.json
+local.settings.json
+
+# Node artifacts
+node_modules
+dist
+*.log
+npm-debug.log*
+
+# TypeScript artifacts
+*.tsbuildinfo
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE artifacts
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+
+# Azure Functions Core Tools
+__blobstorage__
+__queuestorage__
+__azurite_db*__.json
+.python_packages
