@@ -67,10 +67,11 @@ export async function finalizeRun(
     }
 
     // Update run with status, completed_at, and run_result
+    // Use 'add' for completed_at and run_result as they don't exist yet
     const operations = [
       { op: 'replace' as const, path: '/status', value: status },
       { op: 'replace' as const, path: '/updated_at', value: now },
-      { op: 'replace' as const, path: '/completed_at', value: now },
+      { op: 'add' as const, path: '/completed_at', value: now },
       { op: 'add' as const, path: '/run_result', value: runResult },
     ];
 

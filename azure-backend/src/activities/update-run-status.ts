@@ -23,26 +23,37 @@ export async function updateRunStatus(
   context.log(`UpdateRunStatus: ${runId} -> ${status}`);
 
   try {
-    
-    const updateData: any = {
-      status,
-      updated_at: new Date().toISOString(),
-    };
+    // Build patch operations
+    // Use 'replace' for fields that always exist (status, updated_at)
+    // Use 'add' for fields that might not exist (completed_at, error_message)
+    const operations: any[] = [
+      {
+        op: 'replace' as const,
+        path: '/status',
+        value: status,
+      },
+      {
+        op: 'replace' as const,
+        path: '/updated_at',
+        value: new Date().toISOString(),
+      },
+    ];
 
     if (status === 'COMPLETED' || status === 'VETOED') {
-      updateData.completed_at = new Date().toISOString();
+      operations.push({
+        op: 'add' as const,
+        path: '/completed_at',
+        value: new Date().toISOString(),
+      });
     }
 
     if (status === 'FAILED' && errorMessage) {
-      updateData.error_message = errorMessage;
+      operations.push({
+        op: 'add' as const,
+        path: '/error_message',
+        value: errorMessage,
+      });
     }
-
-    // Patch operation to update only specific fields
-    const operations = Object.entries(updateData).map(([key, value]) => ({
-      op: 'replace' as const,
-      path: `/${key}`,
-      value,
-    }));
 
     await container.item(runId, runId).patch(operations);
     

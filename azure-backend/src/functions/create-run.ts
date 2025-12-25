@@ -62,7 +62,6 @@ export async function createRunHandler(
     const instanceId = await client.startNew('AgentPipeline', {
       input: { runId: run_id, ideaText: idea_text },
     });
-
     context.log(`Orchestrator started: ${instanceId} for run ${run_id}`);
 
     // Return response immediately (202 Accepted - processing async)
@@ -91,5 +90,7 @@ export async function createRunHandler(
 app.http('create-run', {
   methods: ['POST'],
   authLevel: 'anonymous',
+  route: 'runs',
   handler: createRunHandler,
+  extraInputs: [df.input.durableClient()],
 });

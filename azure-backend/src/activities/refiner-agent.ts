@@ -62,13 +62,18 @@ export async function refinerAgent(
     }, 3);
 
     context.log('RefinerAgent: Analysis complete');
-    context.log(`Problem statement: ${result.problem_statement.substring(0, 100)}...`);
-    context.log(`Assumptions count: ${result.assumptions.length}`);
+    context.log('RefinerAgent: Raw result:', JSON.stringify(result));
+    context.log(`Problem statement: ${result.problem_statement?.substring(0, 100) || 'MISSING'}...`);
+    context.log(`Assumptions count: ${result.assumptions?.length || 'MISSING'}`);
 
     // Ensure message length constraint
-    const message = result.message.length > 700
-      ? result.message.substring(0, 697) + '...'
-      : result.message;
+    // If message is missing, create one from the structured output
+    const messageText = result.message ||
+      `I've analyzed this idea and identified the core problem: ${result.problem_statement}. The proposed solution involves ${result.proposed_solution}. I've identified ${result.assumptions?.length || 0} key assumptions for validation.`;
+
+    const message = messageText.length > 700
+      ? messageText.substring(0, 697) + '...'
+      : messageText;
 
     return {
       turn_number: input.conversation.length + 1,

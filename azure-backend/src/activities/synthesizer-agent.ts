@@ -62,13 +62,17 @@ export async function synthesizerAgent(
     }, 3);
 
     context.log('SynthesizerAgent: Analysis complete');
-    context.log(`Final recommendation: ${result.recommendation}`);
-    context.log(`Open risks count: ${result.open_risks.length}`);
+    context.log(`Final recommendation: ${result.recommendation || 'MISSING'}`);
+    context.log(`Open risks count: ${result.open_risks?.length || 'MISSING'}`);
 
     // Ensure message length constraint
-    const message = result.message.length > 700
-      ? result.message.substring(0, 697) + '...'
-      : result.message;
+    // If message is missing, create one from the structured output
+    const messageText = result.message ||
+      `Final synthesis complete. Recommendation: ${result.recommendation}. Identified ${result.open_risks?.length || 0} open risks to address.`;
+
+    const message = messageText.length > 700
+      ? messageText.substring(0, 697) + '...'
+      : messageText;
 
     return {
       turn_number: input.conversation.length + 1,

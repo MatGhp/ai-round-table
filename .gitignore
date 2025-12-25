@@ -1,0 +1,15 @@
+# Local development
+azurite-data/
+azurite-debug.log
+NUL
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Environment files
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db

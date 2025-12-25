@@ -61,13 +61,17 @@ export async function realityCheckerAgent(
     }, 3);
 
     context.log('RealityCheckerAgent: Analysis complete');
-    context.log(`Testable claims: ${result.testable_claims.length}`);
-    context.log(`Failure points: ${result.failure_points.length}`);
+    context.log(`Testable claims: ${result.testable_claims?.length || 'MISSING'}`);
+    context.log(`Failure points: ${result.failure_points?.length || 'MISSING'}`);
 
     // Ensure message length constraint
-    const message = result.message.length > 700
-      ? result.message.substring(0, 697) + '...'
-      : result.message;
+    // If message is missing, create one from the structured output
+    const messageText = result.message ||
+      `I've reviewed the analysis and identified ${result.testable_claims?.length || 0} testable claims and ${result.failure_points?.length || 0} potential failure points.`;
+
+    const message = messageText.length > 700
+      ? messageText.substring(0, 697) + '...'
+      : messageText;
 
     return {
       turn_number: input.conversation.length + 1,

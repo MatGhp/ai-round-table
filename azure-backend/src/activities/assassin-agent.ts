@@ -69,9 +69,15 @@ export async function assassinAgent(
     }
 
     // Ensure message length constraint
-    const message = result.message.length > 700
-      ? result.message.substring(0, 697) + '...'
-      : result.message;
+    // If message is missing, create one from the structured output
+    const messageText = result.message ||
+      (result.veto ?
+        `I've decided to veto this idea due to ${result.failure_mode}: ${result.kill_reason}` :
+        `I've reviewed the idea and decided not to veto it. The idea can proceed to the next evaluation stage.`);
+
+    const message = messageText.length > 700
+      ? messageText.substring(0, 697) + '...'
+      : messageText;
 
     return {
       turn_number: input.conversation.length + 1,
