@@ -25,7 +25,7 @@ interface FinalizeRunInput {
 }
 
 /**
- * Finalize a run by setting status and creating run_result
+ * Finalize a run by setting status and creating result object
  */
 export async function finalizeRun(
   input: FinalizeRunInput,
@@ -39,11 +39,11 @@ export async function finalizeRun(
     
     const now = new Date().toISOString();
 
-    // Build run_result based on status
-    let runResult: any;
+    // Build result object based on status
+    let result: any;
 
     if (status === 'VETOED') {
-      runResult = {
+      result = {
         summary: finalTurn.message,
         decision: 'STOP',
         veto_reason: finalTurn.structured_output.kill_reason,
@@ -54,7 +54,7 @@ export async function finalizeRun(
       };
     } else {
       // COMPLETED - extract synthesizer output
-      runResult = {
+      result = {
         summary: finalTurn.message,
         decision: mapRecommendationToDecision(finalTurn.structured_output.recommendation),
         recommendation: finalTurn.structured_output.recommendation,
@@ -66,13 +66,13 @@ export async function finalizeRun(
       };
     }
 
-    // Update run with status, completed_at, and run_result
-    // Use 'add' for completed_at and run_result as they don't exist yet
+    // Update run with status, completed_at, and result
+    // Use 'replace' for result since it exists as null initially
     const operations = [
       { op: 'replace' as const, path: '/status', value: status },
       { op: 'replace' as const, path: '/updated_at', value: now },
       { op: 'add' as const, path: '/completed_at', value: now },
-      { op: 'add' as const, path: '/run_result', value: runResult },
+      { op: 'replace' as const, path: '/result', value: result },
     ];
 
     await container.item(runId, runId).patch(operations);
